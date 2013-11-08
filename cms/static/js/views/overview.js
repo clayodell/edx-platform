@@ -133,8 +133,8 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
                 'display_name': display_name
             });
 
-            $.postJSON('/create_item', {
-                    'parent_location': parent,
+            $.postJSON('/xblock', {
+                    'parent_locator': parent,
                     'category': category,
                     'display_name': display_name
                 },
@@ -160,7 +160,7 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
             var $saveButton = $newSubsection.find('.new-subsection-name-save');
             var $cancelButton = $newSubsection.find('.new-subsection-name-cancel');
 
-            var parent = $(this).parents("section.branch").data("id");
+            var parent = $(this).parents("section.branch").data("parent");
 
             $saveButton.data('parent', parent);
             $saveButton.data('category', $(this).data('category'));
@@ -183,8 +183,8 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
             });
 
 
-            $.postJSON('/create_item', {
-                    'parent_location': parent,
+            $.postJSON('/xblock', {
+                    'parent_locator': parent,
                     'category': category,
                     'display_name': display_name
                 },
