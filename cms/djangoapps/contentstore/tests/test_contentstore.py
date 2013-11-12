@@ -1916,7 +1916,7 @@ class MetadataSaveTestCase(ModuleStoreTestCase):
 
 def _create_course(test, course_data):
     """
-    Creates a course via an AJAX request and verifies the URL returned in the response..
+    Creates a course via an AJAX request and verifies the URL returned in the response.
     """
     course_id = _get_course_id(course_data)
     new_location = loc_mapper().translate_location(course_id, CourseDescriptor.id_to_location(course_id), False, True)
@@ -1930,7 +1930,7 @@ def _create_course(test, course_data):
 
 def _course_factory_create_course():
     """
-    Creates a course via the CourseFactory and returs the locator for it.
+    Creates a course via the CourseFactory and returns the locator for it.
     """
     course = CourseFactory.create(org='MITx', course='999', display_name='Robot Super Course')
     return loc_mapper().translate_location(course.location.course_id, course.location, False, True)

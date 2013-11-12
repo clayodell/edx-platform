@@ -30,14 +30,12 @@ class ItemTest(CourseTestCase):
         """
         Get the item referenced by the locator from the modulestore
         """
-        if draft:
-            return modulestore('draft').get_item(self.get_old_id(locator))
-        else:
-            return modulestore().get_item(self.get_old_id(locator))
+        store = modulestore('draft') if draft else modulestore()
+        return store.get_item(self.get_old_id(locator))
 
     def response_locator(self, response):
         """
-        Get the id from the response payload
+        Get the locator (unicode representation) from the response payload
         :param response:
         """
         parsed = json.loads(response.content)
@@ -97,14 +95,18 @@ class TestCreateItem(ItemTest):
         resp = self.create_xblock(parent_locator=chap_locator, category='vertical')
         self.assertEqual(resp.status_code, 200)
 
-        vert_location = self.response_locator(resp)
+        vert_locator = self.response_locator(resp)
 
         # create problem w/ boilerplate
         template_id = 'multiplechoice.yaml'
-        resp = self.create_xblock(parent_locator=vert_location, category='problem', boilerplate=template_id)
+        resp = self.create_xblock(
+            parent_locator=vert_locator,
+            category='problem',
+            boilerplate=template_id
+        )
         self.assertEqual(resp.status_code, 200)
-        prob_location = self.response_locator(resp)
-        problem = self.get_item_from_modulestore(prob_location, True)
+        prob_locator = self.response_locator(resp)
+        problem = self.get_item_from_modulestore(prob_locator, True)
         # ensure it's draft
         self.assertTrue(problem.is_draft)
         # check against the template

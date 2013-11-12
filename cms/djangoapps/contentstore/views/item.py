@@ -80,6 +80,7 @@ def xblock_handler(request, tag=None, course_id=None, branch=None, version_guid=
             content_type="text/plain"
         )
 
+
 def _save_item(item_location, data=None, children=None, metadata=None, nullout=None):
     """
     Saves certain properties (data, children, metadata, nullout) for a given xblock item.
@@ -162,7 +163,8 @@ def _create_item(request):
 
     parent = get_modulestore(category).get_item(parent_location)
     # Necessary to set revision=None or else metadata inheritance does not work
-    # (the stored computed_metadata has the key as the ID with revision=None).
+    # (the ID with @draft will be used as the key in the inherited metadata map,
+    # and that is not expected by the code that later references it).
     dest_location = parent_location.replace(category=category, name=uuid4().hex, revision=None)
 
     # get the metadata, display_name, and definition from the request
