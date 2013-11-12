@@ -47,7 +47,7 @@ def xblock_handler(request, tag=None, course_id=None, branch=None, version_guid=
         json: update the xblock instance (note that create is not yet supported). The json payload can contain
         these fields, all optional:
             :data: the new value for the data.
-            :children: the ids (old-style) of children for this xblock.
+            :children: the locator ids of children for this xblock.
             :metadata: new values for the metadata fields. Any whose values are None will be deleted not set
                        to None! Absent ones will be left alone.
             :nullout: which metadata fields to set to None
@@ -99,7 +99,12 @@ def _save_item(item_location, data=None, children=None, metadata=None, nullout=N
         store.update_item(item_location, data)
 
     if children is not None:
-        store.update_children(item_location, children)
+        children_ids = [
+            loc_mapper().translate_locator_to_location(BlockUsageLocator(child_locator)).url()
+            for child_locator
+            in children
+        ]
+        store.update_children(item_location, children_ids)
 
     # cdodge: also commit any metadata which might have been passed along
     if nullout is not None or metadata is not None:
@@ -195,7 +200,7 @@ def _create_item(request):
     locator = loc_mapper().translate_location(
         get_course_for_item(parent_location).location.course_id, dest_location, False, True
     )
-    return JsonResponse({'id': dest_location.url(), "locator": unicode(locator), "update_url": locator.url_reverse("xblock")})
+    return JsonResponse({'id': dest_location.url(), "locator": unicode(locator)})
 
 
 def _delete_item_at_location(item_location, delete_children=False, delete_all_versions=False):

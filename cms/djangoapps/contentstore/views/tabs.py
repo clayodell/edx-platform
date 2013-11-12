@@ -127,7 +127,7 @@ def edit_tabs(request, org, course, coursename):
             static_tab.location.url(),
             loc_mapper().translate_location(
                 course_item.location.course_id, static_tab.location, False, True
-            ).url_reverse("xblock")
+            )
         ]
         for static_tab
         in static_tabs

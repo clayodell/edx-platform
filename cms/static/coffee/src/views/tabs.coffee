@@ -4,8 +4,12 @@ define ["jquery", "jquery.ui", "backbone", "js/views/feedback_prompt", "js/views
 
     initialize: =>
       @$('.component').each((idx, element) =>
-          model = new Backbone.Model(id: $(element).data('locator'))
-          model.url = $(element).data('update_url')
+          model = new Backbone.Model({
+              id: $(element).data('locator'),
+              old_id:$(element).data('id')
+          })
+          model.urlRoot ='/xblock'
+
           new ModuleEditView(
               el: element,
               onDelete: @deleteTab,
@@ -84,7 +88,7 @@ define ["jquery", "jquery.ui", "backbone", "js/views/feedback_prompt", "js/views
               deleting.show()
               $.ajax({
                 type: 'DELETE',
-                url: $component.data('update_url')
+                url: '/xblock/' + $component.data('locator')
               }).success(=>
                 $component.remove()
                 deleting.hide()

@@ -62,8 +62,9 @@ define ["jquery", "jquery.ui", "gettext", "backbone",
 
       @$('.component').each (idx, element) =>
         model = new Backbone.Model
-            id: $(element).data('id')
-        model.url = $(element).data('update_url')
+            id: $(element).data('locator')
+            old_id: $(element).data('id')
+        model.urlRoot = '/xblock'
         new ModuleEditView
           el: element,
           onDelete: @deleteComponent,
@@ -138,7 +139,7 @@ define ["jquery", "jquery.ui", "gettext", "backbone",
               $component = $(event.currentTarget).parents('.component')
               $.ajax({
                 type: 'DELETE',
-                url: $component.data('update_url')
+                url: '/xblock/' + $component.data('locator')
               }).success(=>
                 deleting.hide()
                 analytics.track "Deleted a Component",
@@ -167,7 +168,7 @@ define ["jquery", "jquery.ui", "gettext", "backbone",
       @wait(true)
       $.ajax({
           type: 'DELETE',
-          url: @$el.data('update_url') + "?" + $.param({recurse: true})
+          url: '/xblock' + @$el.data('locator') + "?" + $.param({recurse: true})
       }).success(=>
 
           analytics.track "Deleted Draft",

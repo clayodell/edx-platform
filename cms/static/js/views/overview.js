@@ -37,8 +37,7 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
         var editSectionPublishDate = function (e) {
             e.preventDefault();
             var $modal = $(modalSelector);
-            $modal.attr('data-id', $(this).attr('data-id'));
-            $modal.attr('data-update_url', $(this).attr('data-update_url'));
+            $modal.attr('data-locator', $(this).attr('data-locator'));
             $modal.find('.start-date').val($(this).attr('data-date'));
             $modal.find('.start-time').val($(this).attr('data-time'));
             if ($modal.find('.start-date').val() == '' && $modal.find('.start-time').val() == '') {
@@ -56,12 +55,11 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
                 $('.edit-subsection-publish-settings .start-time')
             );
 
-            var id = $(modalSelector).attr('data-id');
-            var url = $(modalSelector).attr('data-update_url');
+            var locator = $(modalSelector).attr('data-locator');
 
             analytics.track('Edited Section Release Date', {
                 'course': course_location_analytics,
-                'id': id,
+                'id': locator,
                 'start': datetime
             });
 
@@ -71,7 +69,7 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
             saving.show();
             // call into server to commit the new order
             $.ajax({
-                url: url,
+                url: '/xblock/'+locator,
                 type: "PUT",
                 dataType: "json",
                 contentType: "application/json",
@@ -87,18 +85,18 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
                         return (number < 10 ? '0' : '') + number;
                     };
 
-                    var $thisSection = $('.courseware-section[data-id="' + id + '"]');
+                    var $thisSection = $('.courseware-section[data-locator="' + locator + '"]');
                     var html = _.template(
                         '<span class="published-status">' +
                             '<strong>' + gettext("Will Release:") + '&nbsp;</strong>' +
                             gettext("{month}/{day}/{year} at {hour}:{minute} UTC") +
                             '</span>' +
-                            '<a href="#" class="edit-button" data-date="{month}/{day}/{year}" data-time="{hour}:{minute}" data-id="{id}">' +
+                            '<a href="#" class="edit-button" data-date="{month}/{day}/{year}" data-time="{hour}:{minute}" data-locator="{locator}">' +
                             gettext("Edit") +
                             '</a>',
                         {year: datetime.getUTCFullYear(), month: pad2(datetime.getUTCMonth() + 1), day: pad2(datetime.getUTCDate()),
                             hour: pad2(datetime.getUTCHours()), minute: pad2(datetime.getUTCMinutes()),
-                            id: id},
+                            locator: locator},
                         {interpolate: /\{(.+?)\}/g});
                     $thisSection.find('.section-published-date').html(html);
                     ModalUtils.hideModal();
@@ -140,7 +138,7 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
                 },
 
                 function(data) {
-                    if (data.id != undefined) location.reload();
+                    if (data.locator != undefined) location.reload();
                 });
         };
 
@@ -160,7 +158,7 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
             var $saveButton = $newSubsection.find('.new-subsection-name-save');
             var $cancelButton = $newSubsection.find('.new-subsection-name-cancel');
 
-            var parent = $(this).parents("section.branch").data("parent");
+            var parent = $(this).parents("section.branch").data("locator");
 
             $saveButton.data('parent', parent);
             $saveButton.data('category', $(this).data('category'));
@@ -190,7 +188,7 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
                 },
 
                 function(data) {
-                    if (data.id != undefined) {
+                    if (data.locator != undefined) {
                         location.reload();
                     }
                 });
@@ -220,7 +218,7 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
                     // Exclude the 'new unit' buttons, and make sure we don't
                     // prepend an element to itself
                     var siblings = container.children().filter(function () {
-                        return $(this).data('id') !== undefined && !$(this).is(ele);
+                        return $(this).data('locator') !== undefined && !$(this).is(ele);
                     });
                     // If the container is collapsed, check to see if the
                     // element is on top of its parent list -- don't check the
@@ -417,16 +415,16 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
                 var parentSelector = ele.data('parent-location-selector');
                 var childrenSelector = ele.data('child-selector');
                 var newParentEle = ele.parents(parentSelector).first();
-                var newParentID = newParentEle.data('id');
-                var oldParentID = ele.data('parent-id');
+                var newParentLocator = newParentEle.data('locator');
+                var oldParentLocator = ele.data('parent');
                 // If the parent has changed, update the children of the old parent.
-                if (oldParentID !== newParentID) {
+                if (newParentLocator !== oldParentLocator) {
                     // Find the old parent element.
                     var oldParentEle = $(parentSelector).filter(function () {
-                        return $(this).data('id') === oldParentID;
+                        return $(this).data('locator') === oldParentLocator;
                     });
                     this.saveItem(oldParentEle, childrenSelector, function () {
-                        ele.data('parent-id', newParentID);
+                        ele.data('parent', newParentLocator);
                     });
                 }
                 var saving = new NotificationView.Mini({
@@ -453,11 +451,11 @@ define(["domReady", "jquery", "jquery.ui", "underscore", "gettext", "js/views/fe
                 var children = _.map(
                     ele.find(childrenSelector),
                     function (child) {
-                        return $(child).data('id');
+                        return $(child).data('locator');
                     }
                 );
                 $.ajax({
-                    url: ele.data('update_url'),
+                    url: '/xblock/' + ele.data('locator'),
                     type: 'PUT',
                     dataType: 'json',
                     contentType: 'application/json',

@@ -1532,8 +1532,9 @@ class ContentStoreTest(ModuleStoreTestCase):
         resp = self._show_course_overview(loc)
         self.assertContains(
             resp,
-            '<article class="courseware-overview" data-id="i4x://MITx/999/course/Robot_Super_Course" data-update_url=',
-            status_code=200
+            '<article class="courseware-overview" data-locator="MITx.999.Robot_Super_Course/branch/draft/block/Robot_Super_Course">',
+            status_code=200,
+            html=True
         )
 
     def test_create_item(self):

@@ -178,7 +178,7 @@ function saveSubsection() {
         $spinner.show();
     }
 
-    var url = $('.subsection-body').data('update_url');
+    var locator = $('.subsection-body').data('locator');
 
     // pull all 'normalized' metadata editable fields on page
     var metadata_fields = $('input[data-metadata-name]');
@@ -202,7 +202,7 @@ function saveSubsection() {
     });
 
     $.ajax({
-        url: url,
+        url: '/xblock/'+locator,
         type: "PUT",
         dataType: "json",
         contentType: "application/json",
@@ -266,11 +266,11 @@ function _deleteItem($el, type) {
                 click: function(view) {
                     view.hide();
 
-                    var id = $el.data('id');
+                    var locator = $el.data('locator');
 
                     analytics.track('Deleted an Item', {
                         'course': course_location_analytics,
-                        'id': id
+                        'id': locator
                     });
 
                     var deleting = new NotificationView.Mini({
@@ -280,7 +280,7 @@ function _deleteItem($el, type) {
 
                     $.ajax({
                         type: 'DELETE',
-                        url: $el.data('update_url')+'?'+ $.param({recurse: true, all_versions: true}),
+                        url: '/xblock/' + locator +'?'+ $.param({recurse: true, all_versions: true}),
                         success: function () {
                             $el.remove();
                             deleting.hide();

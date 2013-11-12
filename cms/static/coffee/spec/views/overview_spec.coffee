@@ -8,7 +8,7 @@ define ["js/views/overview", "js/views/feedback_notification", "sinon", "js/base
                                   <span class="published-status">
                                       <strong>Will Release:</strong> 06/12/2013 at 04:00 UTC
                                   </span>
-                                  <a href="#" class="edit-button" data-date="06/12/2013" data-time="04:00" data-id="i4x://pfogg/42/chapter/d6b47f7b084f49debcaf67fe5436c8e2">Edit</a>
+                                  <a href="#" class="edit-button" data-date="06/12/2013" data-time="04:00" data-locator="i4x://pfogg/42/chapter/d6b47f7b084f49debcaf67fe5436c8e2">Edit</a>
                               </div>
                               """
     
@@ -35,8 +35,8 @@ define ["js/views/overview", "js/views/feedback_notification", "sinon", "js/base
                               """
     
             appendSetFixtures """
-                              <section class="courseware-section branch" data-id="a-location-goes-here">
-                                  <li class="branch collapsed id-holder" data-id="an-id-goes-here">
+                              <section class="courseware-section branch" data-locator="a-location-goes-here">
+                                  <li class="branch collapsed id-holder" data-id="an-id-goes-here" data-locator="an-id-goes-here">
                                     <a href="#" class="delete-section-button"></a>
                                   </li>
                               </section>
@@ -44,19 +44,19 @@ define ["js/views/overview", "js/views/feedback_notification", "sinon", "js/base
     
             appendSetFixtures """
                               <ol>
-                                  <li class="subsection-list branch" data-id="subsection-1-id" id="subsection-1">
+                                  <li class="subsection-list branch" id="subsection-1" data-locator="subsection-1-id">
                                       <ol class="sortable-unit-list" id="subsection-list-1">
-                                          <li class="unit" id="unit-1" data-id="first-unit-id" data-parent-id="subsection-1-id"></li>
-                                          <li class="unit" id="unit-2" data-id="second-unit-id" data-parent-id="subsection-1-id"></li>
-                                          <li class="unit" id="unit-3" data-id="third-unit-id" data-parent-id="subsection-1-id"></li>
+                                          <li class="unit" id="unit-1" data-parent="subsection-1-id" data-locator="first-unit-id"></li>
+                                          <li class="unit" id="unit-2" data-parent="subsection-1-id" data-locator="second-unit-id"></li>
+                                          <li class="unit" id="unit-3" data-parent="subsection-1-id" data-locator="third-unit-id"></li>
                                       </ol>
                                   </li>
-                                  <li class="subsection-list branch" data-id="subsection-2-id" id="subsection-2">
+                                  <li class="subsection-list branch" id="subsection-2" data-locator="subsection-2-id">
                                       <ol class="sortable-unit-list" id="subsection-list-2">
-                                        <li class="unit" id="unit-4" data-id="fourth-unit-id" data-parent-id="subsection-2"></li>
+                                        <li class="unit" id="unit-4" data-parent="subsection-2" data-locator="fourth-unit-id"></li>
                                       </ol>
                                   </li>
-                                  <li class="subsection-list branch" data-id="subsection-3-id" id="subsection-3">
+                                  <li class="subsection-list branch" id="subsection-3" data-locator="subsection-3-id">
                                       <ol class="sortable-unit-list" id="subsection-list-3">
                                   </li>
                               </ol>

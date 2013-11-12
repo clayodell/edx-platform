@@ -12,16 +12,16 @@ from xmodule.modulestore.django import loc_mapper
   <script type='text/javascript'>
 require(["domReady!", "jquery", "backbone", "coffee/src/views/unit", "jquery.ui"],
     function(doc, $, Backbone, UnitEditView, ui) {
-  window.unit_location_analytics = '${unit_location}';
+  window.unit_location_analytics = '${unit_locator}';
 
   // tabs
   $('.tab-group').tabs();
 
   var model = new Backbone.Model({
-      id: '${unit_location}',
+      id: '${unit_locator}',
       state: '${unit_state}'
   });
-  model.url = '${unit_update_url}'
+  model.urlRoot = '/xblock';
   new UnitEditView({
     el: $('.main-wrapper'),
     model: model
@@ -36,8 +36,7 @@ require(["domReady!", "jquery", "backbone", "coffee/src/views/unit", "jquery.ui"
 
 </%block>
 <%block name="content">
-  <div class="main-wrapper edit-state-${unit_state}" data-id="${unit_location}" data-locator="${unit_locator}"
-       data-update_url="${unit_update_url}">
+  <div class="main-wrapper edit-state-${unit_state}" data-id="${unit_location}" data-locator="${unit_locator}">
     <div class="inner-wrapper">
       <div class="alert editing-draft-alert">
         <p class="alert-message"><strong>${_("You are editing a draft.")}</strong>
@@ -51,8 +50,8 @@ require(["domReady!", "jquery", "backbone", "coffee/src/views/unit", "jquery.ui"
         <article class="unit-body window">
         <p class="unit-name-input"><label>${_("Display Name:")}</label><input type="text" value="${unit.display_name_with_default | h}" class="unit-display-name-input" /></p>
           <ol class="components">
-            % for id, component_update_url in components:
-            <li class="component" data-id="${id}" data-update_url="${component_update_url}"/>
+            % for id, locator in components:
+            <li class="component" data-id="${id}" data-locator="${locator}"/>
             % endfor
             <li class="new-component-item adding">
               <div class="new-component">

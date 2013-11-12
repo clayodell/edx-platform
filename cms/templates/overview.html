@@ -39,9 +39,10 @@ require(["domReady!", "jquery", "js/models/location", "js/models/section", "js/v
 
   $(".section-name").each(function() {
       var model = new SectionModel({
+          id: $(this).data("locator"),
           name: $(this).data("name")
       });
-      model.url = $(this).data("update_url");
+      model.urlRoot ='/xblock';
       new SectionShowView({model: model, el: this}).render();
   })
 });
@@ -141,28 +142,26 @@ require(["domReady!", "jquery", "js/models/location", "js/models/section", "js/v
 
       <div class="wrapper-dnd">
         <%
-          course_update_url = loc_mapper().translate_location(
+          course_locator = loc_mapper().translate_location(
             context_course.location.course_id, context_course.location, False, True
-          ).url_reverse('xblock')
+          )
         %>
-        <article class="courseware-overview" data-id="${context_course.location.url()}" data-update_url="${course_update_url}">
+        <article class="courseware-overview" data-locator="${course_locator}">
           % for section in sections:
           <%
             section_locator = loc_mapper().translate_location(
               context_course.location.course_id, section.location, False, True
             )
-            section_update_url = section_locator.url_reverse('xblock')
           %>
-          <section class="courseware-section branch is-draggable" data-id="${section.location}"
-                   data-parent="${section_locator}" data-update_url="${section_update_url}">
-
+          <section class="courseware-section branch is-draggable" data-parent="${course_locator}"
+                   data-locator="${section_locator}">
             <%include file="widgets/_ui-dnd-indicator-before.html" />
 
             <header>
             <a href="#" data-tooltip="${_('Expand/collapse this section')}" class="expand-collapse-icon collapse"></a>
 
-              <div class="item-details" data-id="${section.location}">
-                <h3 class="section-name" data-name="${section.display_name_with_default | h}" data-update_url="${section_update_url}"></h3>
+              <div class="item-details">
+                <h3 class="section-name" data-name="${section.display_name_with_default | h}"></h3>
                 <div class="section-published-date">
                   <%
                     if section.start is not None:
@@ -174,12 +173,12 @@ require(["domReady!", "jquery", "js/models/location", "js/models/section", "js/v
                   %>
                   %if section.start is None:
                     <span class="published-status">${_("This section has not been released.")}</span>
-                    <a href="#" class="schedule-button" data-date="" data-time="" data-id="${section.location}">${_("Schedule")}</a>
+                    <a href="#" class="schedule-button" data-date="" data-time="">${_("Schedule")}</a>
                   %else:
                     <span class="published-status"><strong>${_("Will Release:")}</strong>
                     ${date_utils.get_default_time_display(section.start)}</span>
                     <a href="#" class="edit-button" data-date="${start_date_str}"
-                      data-time="${start_time_str}" data-id="${section.location}" data-update_url="${section_update_url}">${_("Edit")}</a>
+                      data-time="${start_time_str}" data-locator="${section_locator}">${_("Edit")}</a>
                   %endif
                 </div>
               </div>
@@ -195,16 +194,15 @@ require(["domReady!", "jquery", "js/models/location", "js/models/section", "js/v
                   <span class="new-folder-icon"></span>${_("New Subsection")}
                 </a>
               </div>
-              <ol class="sortable-subsection-list" data-id="${section.location.url()}">
+              <ol class="sortable-subsection-list">
                 % for subsection in section.get_children():
                   <%
                     subsection_locator = loc_mapper().translate_location(
                       context_course.location.course_id, subsection.location, False, True
                     )
-                    subsection_update_url = subsection_locator.url_reverse('xblock')
                   %>
                 <li class="courseware-subsection branch collapsed id-holder is-draggable" data-id="${subsection.location}"
-                    data-parent="${subsection_locator}" data-update_url="${subsection_update_url}">
+                    data-parent="${section_locator}" data-locator="${subsection_locator}">
 
                   <%include file="widgets/_ui-dnd-indicator-before.html" />
 

@@ -68,16 +68,17 @@ define ["backbone", "jquery", "underscore", "gettext", "xblock/runtime.v1",
           "/xblock"
           payload
           (data) =>
-              @model.set(id: data.id)
-              @model.url = data.update_url
+              @model.set(id: data.locator)
+              @model.set(old_id: data.id)
+              @model.urlRoot = '/xblock'
               @$el.data('id', data.id)
-              @$el.data('update_url', data.update_url)
+              @$el.data('locator', data.locator)
               @render()
       )
 
     render: ->
-      if @model.id
-        @$el.load("/preview_component/#{@model.id}", =>
+      if @model.get('old_id')
+        @$el.load("/preview_component/#{@model.get('old_id')}", =>
           @loadDisplay()
           @delegateEvents()
         )

@@ -62,7 +62,7 @@ class DeleteItem(ItemTest):
 
         # Now delete it. There was a bug that the delete was failing (static tabs do not exist in draft modulestore).
         resp_content = json.loads(resp.content)
-        resp = self.client.delete(resp_content['update_url'])
+        resp = self.client.delete('/xblock/' + resp_content['locator'])
         self.assertEqual(resp.status_code, 204)
 
 
@@ -136,16 +136,14 @@ class TestEditItem(ItemTest):
         resp = self.create_xblock(display_name=display_name, category='chapter')
         chap_locator = self.response_locator(resp)
         resp = self.create_xblock(parent_locator=chap_locator, category='sequential')
-        resp_content = json.loads(resp.content)
         self.seq_locator = self.response_locator(resp)
-        self.seq_update_url = resp_content['update_url']
+        self.seq_update_url = '/xblock/' + self.seq_locator
 
         # create problem w/ boilerplate
         template_id = 'multiplechoice.yaml'
         resp = self.create_xblock(parent_locator=self.seq_locator, category='problem', boilerplate=template_id)
-        resp_content = json.loads(resp.content)
         self.problem_locator = self.response_locator(resp)
-        self.problem_update_url = resp_content['update_url']
+        self.problem_update_url = '/xblock/' + self.problem_locator
 
     def test_delete_field(self):
         """

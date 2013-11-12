@@ -122,9 +122,9 @@ def edit_subsection(request, location):
             can_view_live = True
             break
 
-    update_url = loc_mapper().translate_location(
+    locator = loc_mapper().translate_location(
         course.location.course_id, item.location, False, True
-    ).url_reverse("xblock", "")
+    )
 
     return render_to_response(
         'edit_subsection.html',
@@ -135,9 +135,10 @@ def edit_subsection(request, location):
            'lms_link': lms_link,
            'preview_link': preview_link,
            'course_graders': json.dumps(CourseGradingModel.fetch(course.location).graders),
+           # For grader, which is not yet converted
            'parent_location': course.location,
            'parent_item': parent,
-           'update_url': update_url,
+           'locator': locator,
            'policy_metadata': policy_metadata,
            'subsection_units': subsection_units,
            'can_view_live': can_view_live
@@ -185,7 +186,6 @@ def edit_unit(request, location):
     unit_locator = loc_mapper().translate_location(
         course.location.course_id, Location(location), False, True
     )
-    unit_update_url = unit_locator.url_reverse("xblock", "")
 
     component_templates = defaultdict(list)
     for category in COMPONENT_TYPES:
@@ -255,7 +255,7 @@ def edit_unit(request, location):
             component.location.url(),
             loc_mapper().translate_location(
                 course.location.course_id, component.location, False, True
-            ).url_reverse("xblock")
+            )
         ]
         for component
         in item.get_children()
@@ -306,7 +306,6 @@ def edit_unit(request, location):
         'unit': item,
         'unit_location': location,
         'unit_locator': unit_locator,
-        'unit_update_url': unit_update_url,
         'components': components,
         'component_templates': component_templates,
         'draft_preview_link': preview_lms_link,
