@@ -8,6 +8,7 @@ define(["backbone", "gettext", "js/views/feedback_notification"], function(Backb
                 return gettext("You must specify a name");
             }
         },
+        urlRoot: "/xblock",
         toJSON: function() {
             return {
                 metadata: {

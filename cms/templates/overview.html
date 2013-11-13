@@ -39,10 +39,9 @@ require(["domReady!", "jquery", "js/models/location", "js/models/section", "js/v
 
   $(".section-name").each(function() {
       var model = new SectionModel({
-          id: $(this).data("locator"),
+          id: $(this).parent(".item-details").data("locator"),
           name: $(this).data("name")
       });
-      model.urlRoot ='/xblock';
       new SectionShowView({model: model, el: this}).render();
   })
 });
@@ -160,7 +159,7 @@ require(["domReady!", "jquery", "js/models/location", "js/models/section", "js/v
             <header>
             <a href="#" data-tooltip="${_('Expand/collapse this section')}" class="expand-collapse-icon collapse"></a>
 
-              <div class="item-details">
+              <div class="item-details" data-locator="${section_locator}">
                 <h3 class="section-name" data-name="${section.display_name_with_default | h}"></h3>
                 <div class="section-published-date">
                   <%
@@ -173,7 +172,7 @@ require(["domReady!", "jquery", "js/models/location", "js/models/section", "js/v
                   %>
                   %if section.start is None:
                     <span class="published-status">${_("This section has not been released.")}</span>
-                    <a href="#" class="schedule-button" data-date="" data-time="">${_("Schedule")}</a>
+                    <a href="#" class="schedule-button" data-date="" data-time="" data-locator="${section_locator}">${_("Schedule")}</a>
                   %else:
                     <span class="published-status"><strong>${_("Will Release:")}</strong>
                     ${date_utils.get_default_time_display(section.start)}</span>

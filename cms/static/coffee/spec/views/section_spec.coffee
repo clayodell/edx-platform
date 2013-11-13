@@ -6,6 +6,7 @@ define ["js/models/section", "js/views/section_show", "js/views/section_edit", "
                 spyOn(SectionShow.prototype, "switchToEditView")
                     .andCallThrough()
                 @model = new Section({
+                    id: 42
                     name: "Life, the Universe, and Everything"
                 })
                 @view = new SectionShow({model: @model})
@@ -43,9 +44,9 @@ define ["js/models/section", "js/views/section_show", "js/views/section_edit", "
                 @xhr.onCreate = (xhr) -> requests.push(xhr)
 
                 @model = new Section({
+                    id: 42
                     name: "Life, the Universe, and Everything"
                 })
-                @model.url = 'test_url'
                 @view = new SectionEdit({model: @model})
                 @view.render()
 
