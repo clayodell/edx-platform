@@ -304,6 +304,7 @@ def edit_unit(request, location):
     return render_to_response('unit.html', {
         'context_course': course,
         'unit': item,
+        # Still needed for creating a draft.
         'unit_location': location,
         'unit_locator': unit_locator,
         'components': components,

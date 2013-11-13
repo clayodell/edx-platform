@@ -110,7 +110,7 @@ define ["jquery", "jquery.ui", "gettext", "backbone",
 
       @closeNewComponent(event)
 
-    components: => @$('.component').map((idx, el) -> $(el).data('id')).get()
+    components: => @$('.component').map((idx, el) -> $(el).data('locator')).get()
 
     wait: (value) =>
       @$('.unit-body').toggleClass("waiting", value)
@@ -145,7 +145,7 @@ define ["jquery", "jquery.ui", "gettext", "backbone",
                 analytics.track "Deleted a Component",
                   course: course_location_analytics
                   unit_id: unit_location_analytics
-                  id: $component.data('id')
+                  id: $component.data('locator')
 
                 $component.remove()
                 # b/c we don't vigilantly keep children up to date
@@ -168,7 +168,7 @@ define ["jquery", "jquery.ui", "gettext", "backbone",
       @wait(true)
       $.ajax({
           type: 'DELETE',
-          url: '/xblock' + @$el.data('locator') + "?" + $.param({recurse: true})
+          url: '/xblock/' + @$el.data('locator') + "?" + $.param({recurse: true})
       }).success(=>
 
           analytics.track "Deleted Draft",
